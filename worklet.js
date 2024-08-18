@@ -10,32 +10,33 @@ class ModFmProcessor extends AudioWorkletProcessor {
       {
         name: "ff",
         automationRate: "k-rate",
-        defaultValue: 110,
+        defaultValue: 440,
         minValue: 10,
-        maxValue: sampleRate/2
+        maxValue: sampleRate/2,
       },
       {
         name: "fm",
         automationRate: "k-rate",
-        defaultValue: 440,
+        defaultValue: 110,
         minValue: 10,
         maxValue: sampleRate/2,
       },
       {
         name: "B",
         automationRate: "k-rate",
-        defaultValue: 2,
+        defaultValue: 75,
         minValue: 0,
         maxValue: sampleRate/2,
-      }
+      },
     ];
   }
   process(inputs, outputs, parameters) {
     const output = outputs[0];
     const ff = parameters.ff[0];
     const fm = parameters.fm[0];
-    const n_int = Math.floor(ff / fm);
-    const n_frac = ff / fm - n_int;
+    const n = ff / fm;
+    const n_int = Math.floor(n_int);
+    const n_frac = n - n_int;
     const g = Math.pow(2, -fm / parameters.B[0]);
     const k = 2 * g / ((g - 2) * g + 1);
 

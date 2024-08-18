@@ -9,11 +9,11 @@
 </head>
 
 <body>
-    <label>ff<input type="number" id="ff" min="10" max="4000" value="400" step="1"/></label>
+    <label>ff<input type="number" id="ff" min="10" max="4000" value="440" step="1"/>Hz</label>
     <br/>
-    <label>fm<input type="number" id="fm" min="10" max="4000" value="100" step="1"/></label>
+    <label>fm<input type="number" id="fm" min="10" max="4000" value="110" step="1"/>Hz</label>
     <br/>
-    <label>B<input type="number" id="B" min="10" max="4000" value="75" step="1"/></label>
+    <label>B<input type="number" id="B" min="10" max="4000" value="75" step="1"/>Hz</label>
     <br/>
     <button id="t">
         Trigger
@@ -22,6 +22,8 @@
     <button id="mute">
         Mute
     </button>
+    <div id="spectrum"></div>
+    <script src="https://unpkg.com/audiomotion-analyzer/dist"></script>
     <script src="index.js"></script>
 </body>
 </html>
