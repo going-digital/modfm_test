@@ -1,72 +1,41 @@
-var ctx = new AudioContext();
-var createNote = function(freq, offset) {
-    var attack = 0.01;
-    var decay = 0.03;
-    var sustain = 0.3;
-    var release = 0.8;
-    var start = ctx.currentTime + (offset || 0);
+// https://mural.maynoothuniversity.ie/4697/1/JAES_V58_6_PG459hirez.pdf
+let audioCtx = new AudioContext();
+let phasor;
 
+async function init() {
+  await audioCtx.audioWorklet.addModule("worklet.js");
+  phasor = new AudioWorkletNode(audioCtx, "modfm-processor");
+  phasor.connect(masterGain);
 }
 
-class ModFMProcessor extends AudioWorkletProcessor {
-    static get parameterDescriptors() {
-        return [
-            {
-                name: "frequency",
-                defaultValue: 1000,
-                minValue: 10,
-                maxValue: 4000
-            }, {
-                name: "ratio",
-                defaultValue: 0.1,
-                minValue: 0.1,
-                maxValue: 2
-            }, {
-                name: "k",
-                defaultValue: 1,
-                minValue: 0,
-                maxValue: 35
-            }, {
-                name: "r",
-                defaultValue: 1,
-                minValue: 0,
-                maxValue: 1
-            }, {
-                name: "s",
-                defaultValue: 0,
-                minValue: -1,
-                maxValue: 1
-            }
-        ];
-    }
-    constructor() {
-        super();
-        this.carrier_phase = 0;
-        this.modulator_phase = 0;
-    }
-    process(inputs, outputs, params) {
-        let frequency = params.frequency;
-        let mod_frequency = frequency * params.ratio;
-        let k = params.k;
-        let r = params.r;
-        let s = params.s;
-        let quantumSize = outputs[0][0].length;
-        let tau = 2 * Math.PI;
-        for (let i=0; s<quantumSize; s++) {
-            for (let o=0; o<outputs.length; o++) {
-                this.carrier_phase = (this.carrier_phase + frequency / sampleRate) % 1;
-                this.modulator_phase = (this.modulator_phase + mod_frequency / sampleRate) % 1;
-                let value = (
-                    Math.exp(r * k * (Math.cos(tau * this.modulator_phase)-1))
-                    * Math.cos(this.carrier_phase + s * k * Math.sin(tau * this.modulator_phase))
-                );
-                for (let ch=0; ch<outputs[0].length; ch++) {
-                    outputs[o][ch][i] = value;
-                }
-            }
-        }
-        return true;
-    }
-}
+let masterGain = audioCtx.createGain();
+masterGain.gain.value = 1;
+masterGain.connect(audioCtx.destination);
 
-registerProcessor('phasor-processor', ModFMProcessor);
+document.getElementById("t").addEventListener("click", async () => {
+  console.log(audioCtx.state);
+  //if (audioCtx.state === "suspended")
+  audioCtx.resume();
+  let t = audioCtx.currentTime;
+  masterGain.gain.setTargetAtTime(1, t, 0.1);
+  //masterGain.gain.setTargetAtTime(0, t + 1, 5);
+});
+
+document.getElementById("mute").addEventListener("click", async () => {
+  masterGain.gain.setValueAtTime(0, 0, 10);
+});
+
+document.getElementById("ff").addEventListener("input", (evt) => {
+  phasor.parameters.get("ff").setValueAtTime(evt.target.value, 0);
+  console.log("Set ff to ", evt.target.value);
+});
+document.getElementById("fm").addEventListener("input", (evt) => {
+  phasor.parameters.get("fm").setValueAtTime(evt.target.value, 0);
+  console.log("Set fm to ", evt.target.value);
+});
+document.getElementById("B").addEventListener("input", (evt) => {
+  phasor.parameters.get("B").setValueAtTime(evt.target.value, 0);
+  console.log("Set B to ", evt.target.value);
+});
+
+init();
