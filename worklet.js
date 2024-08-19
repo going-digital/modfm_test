@@ -35,7 +35,7 @@ class ModFmProcessor extends AudioWorkletProcessor {
     const ff = parameters.ff[0];
     const fm = parameters.fm[0];
     const n = ff / fm;
-    const n_int = Math.floor(n_int);
+    const n_int = Math.floor(n);
     const n_frac = n - n_int;
     const g = Math.pow(2, -fm / parameters.B[0]);
     const k = 2 * g / ((g - 2) * g + 1);
