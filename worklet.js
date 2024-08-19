@@ -43,13 +43,15 @@ class ModFmProcessor extends AudioWorkletProcessor {
     // Need fm, fshift, n_int, n_frac, k
 
     for (let i=0; i < output[0].length; i++) {
+      // This is based on equation 14 of paper.
+      // Note that this doesn't match Fig. 8.
+
       // Phase accumulators
       this.m_phase = (this.m_phase + fm / sampleRate) % 1;
       this.f_phase = (this.f_phase + ff / sampleRate) % 1;
       // Phase addition
-      let phase_combined = (this.m_phase + this.f_phase) % 1;
-      let phase_low = (n_int * phase_combined) % 1;
-      let phase_high = (phase_low + phase_combined) % 1;
+      let phase_low = (n_int * this.f_phase + this.m_phase) % 1;
+      let phase_high = (phase_low + this.f_phase) % 1;
       // Sideband terms
       let cos_term_low = Math.cos(2 * Math.PI * phase_low);
       let cos_term_high_m_low = Math.cos(2 * Math.PI * phase_high) - cos_term_low;
