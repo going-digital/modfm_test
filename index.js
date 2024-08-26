@@ -11,15 +11,8 @@ function init_synth() {
 
   phasor = new AudioWorkletNode(audioCtx, "modfm-processor");
   phasor.connect(masterGain);
-
-  // const audioMotion = new AudioMotionAnalyzer(
-  //   document.getElementById('spectrum'),
-  //   {
-  //     source: phasor,
-  //     height: "100px"
-  //   }
-  // );
 }
+
 function onKeyChange(ch, note, velocity) {
   let frequency = 440 * Math.pow(2, (note - 69)/12);
   if (velocity > 0) {
@@ -48,9 +41,8 @@ function onControlChange(ch, cc, value) {
 
 function onMidiMessage(e) {
   if (e.data.length > 0) {
-    let msg_type = (e.data[0] & 0xf0);
+    let msg_type = e.data[0] & 0xf0;
     let channel = e.data[0] & 0x0f;
-    //console.log(e.data);
     switch (msg_type) {
       case 0x80:
         onKeyChange(channel, e.data[1], 0);
@@ -130,5 +122,3 @@ document.getElementById("B").addEventListener("input", (evt) => {
   phasor.parameters.get("B").setValueAtTime(evt.target.value, 0);
   console.log("Set B to ", evt.target.value);
 });
-
-//init();
