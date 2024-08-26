@@ -1,11 +1,22 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <title>Synchronous ModFM test</title>
     <style>
         <link rel="stylesheet" type="text/css" href="index.css" />
     </style>
+    <script type="module">
+        function onEnabled() {
+            if (WebMidi.inputs.length < 1) {
+                document.body.innerHTML += "No device detected.";
+            } else {
+                WebMidi.inputs.forEach((device, index) => {
+                    document.body.innerHTML += `${index}: ${device.name}<br>`;
+                });
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -15,6 +26,9 @@
     <br/>
     <label>B<input type="number" id="B" min="10" max="4000" value="75" step="1"/>Hz</label>
     <br/>
+    <button id="start">
+        Connect audio
+    </button>
     <button id="t">
         Trigger
     </button>

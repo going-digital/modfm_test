@@ -1,6 +1,6 @@
-- [ ] Get sound from AudioWorkletProcessor to speaker
-- [ ] ModFM with dialogue box set values
-- [ ] MIDI control surfaces
+- [x] Get sound from AudioWorkletProcessor to speaker
+- [x] ModFM with dialogue box set values
+- [x] MIDI control surfaces
 - [ ] ADSR and note events
 - [ ] MIDI keyboard and control surfaces
 - [ ] Tune up into playable system
